@@ -1,28 +1,26 @@
-name: Deploy Frontend CICD
+name: Build and Push Docker Image
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
-  deplooy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-      - name: Generate deployment package
-        run: zip -r deploy.zip . -x '*.git*'
+      - name: Set up Docker
+        uses: docker/setup-qemu-action@v1
 
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v21
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: video-new-docker
-          environment_name: Video-new-docker-env
-          version_label: ${{ github.sha }}
-          existing_bucket_name: elasticbeanstalk-eu-west-2-861429808101
-          region: eu-west-2
-          deployment_package: deploy.zip
+      - name: Build Docker image
+        run: docker build -t video-recommendation-react .
+
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker image
+        run: docker push navidhejazi/video-recommendation-react:latest
