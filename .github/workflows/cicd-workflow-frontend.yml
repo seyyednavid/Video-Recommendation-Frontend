@@ -21,8 +21,6 @@ jobs:
 
       - name: Log in to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        env:
-          REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
 
       - name: Push Docker image
         run: docker push navidhejazi/video-recommendation-react:latest
