@@ -16,6 +16,7 @@ const App = () => {
       if (searchText) {
         url += `&search=${searchText}`;
       }
+      console.log("hi");
       const response = await fetch(url);
       if (!response.status === 200) {
         throw new Error("something went wrong!");
